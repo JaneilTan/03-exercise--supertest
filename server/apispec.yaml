@@ -1,0 +1,117 @@
+openapi: 3.0.2
+info:
+  title: Todo API
+  version: "1.0"
+  contact:
+    name: My name
+    email: email@example.com
+  description: This API allows user to keep track of their tasks
+servers:
+  - url: "http://localhost:5001/api"
+    description: Development server
+paths:
+  /todos:
+    get:
+      description: Get a list of todos
+      operationId: get-todos
+      tags:
+        - todos
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Todo"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      description: Create a new todo
+      operationId: post-todos
+      tags:
+        - todos
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        400:
+          $ref: "#/components/responses/BadRequest"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+  /todos/{todoId}:
+    parameters:
+      - schema:
+          type: string
+        name: todoId
+        in: path
+        required: true
+    get:
+      description: Retrieve the information of the todo with the matching todo ID.
+      operationId: get-todos-todoId
+      tags:
+        - todos
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+    patch:
+      description: Update an existing todo.
+      operationId: patch-todos-todoId
+      tags:
+        - todos
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      description: Deletes a specific todo
+      operationId: delete-todos-todoId
+      tags:
+        - todos
+      responses:
+        200:
+          description: OK
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/InternalServerError"
+components:
+  responses:
+    BadRequest:
+      description: Bad Request
+    NotFound:
+      description: Not Found
+    InternalServerError:
+      description: Internal Server Error
+  schemas:
+    Todo:
+      type: object
+      properties:
+        id:
+          type: integer
+        description:
+          type: string
+      required:
+        - id
+        - description
+tags:
+  - name: todos

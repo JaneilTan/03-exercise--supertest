@@ -1,0 +1,27 @@
+version: "3"
+services:
+  supertest:
+    build:
+      context: ./server
+    environment:
+      - PGDATABASE=postgres
+      - PGHOST=test_todo_db
+      - PGUSER=postgres
+      - PGPASSWORD=password
+      - PGPORT=5432
+      - NODE_ENV=test
+    depends_on:
+      - test_todo_db
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    entrypoint: ["npm", "test"]
+  test_todo_db:
+    build:
+      context: ./db-test
+    volumes:
+      - test-todo-db-volume:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+volumes:
+  test-todo-db-volume:

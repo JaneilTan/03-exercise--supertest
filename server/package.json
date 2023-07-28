@@ -1,0 +1,26 @@
+{
+  "name": "server-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start:dev": "nodemon index.js",
+    "test": "jest --watchAll --colors --verbose"
+  },
+  "author": "DI",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "js-yaml": "^4.1.0",
+    "pg": "^8.4.2",
+    "swagger-ui-express": "^4.2.0"
+  },
+  "devDependencies": {
+    "jest": "^27.4.5",
+    "nodemon": "^2.0.15",
+    "supertest": "^6.1.6"
+  }
+}
