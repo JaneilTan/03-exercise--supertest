@@ -27,7 +27,7 @@ app.post("/api/todos", async (req, res) => {
       "INSERT INTO todo (description) VALUES($1) RETURNING *",
       [description]
     );
-    res.json(newTodo.rows[0]);
+    res.status(201).json(newTodo.rows[0]);
   } catch (err) {
     console.error(err.message);
   }
@@ -38,7 +38,7 @@ app.post("/api/todos", async (req, res) => {
 app.get("/api/todos", async (req, res) => {
   try {
     const allTodos = await pool.query("SELECT * FROM todo");
-    return res.json(allTodos.rows);
+    return res.status(200).json(allTodos.rows);
   } catch (err) {
     console.error(err.message);
   }
@@ -52,7 +52,10 @@ app.get("/api/todos/:id", async (req, res) => {
     const todo = await pool.query("SELECT * FROM todo WHERE todo_id = $1", [
       id,
     ]);
-    res.json(todo.rows[0]);
+    if (todo.rows.length === 0) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+    res.status(200).json(todo.rows[0]);
   } catch (err) {
     console.error(err.message);
   }
@@ -68,7 +71,10 @@ app.put("/api/todos/:id", async (req, res) => {
       "UPDATE todo SET description = $1 WHERE todo_id = $2",
       [description, id]
     );
-    res.json("Todo was updated!");
+    if (updateTodo.rowCount === 0) {
+      return res.status(404).json({ error: "Updated todo not found"});
+    }
+    res.status(200).json("Todo was updated!");
   } catch (err) {
     console.error(err.message);
   }
