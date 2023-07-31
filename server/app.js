@@ -74,7 +74,12 @@ app.put("/api/todos/:id", async (req, res) => {
     if (updateTodo.rowCount === 0) {
       return res.status(404).json({ error: "Updated todo not found"});
     }
-    res.status(200).json("Todo was updated!");
+    const updatedTodo = updateTodo.rows[0];
+
+    res.status(200).json({
+      description: updatedTodo.description,
+      todo_id: updatedTodo.todo_id,
+    });
   } catch (err) {
     console.error(err.message);
   }

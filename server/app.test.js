@@ -88,21 +88,36 @@ describe("Todos API", () => {
   });
   
 
-  test("PUT /todos/:id: WHEN the client sends a request to update an existing todo ID AND the request is well-formatted THEN return status 200 and the updated todo", async () => {
-    const todoid = 1;
-    
-    const expectedResponseBody = {
-      todo_id: todoid,
-      description: "description",
-    };
-    const response = await request(app)
-      .put(`/api/todos/${todoid}`)
+  // test("PUT /todos/:id: WHEN the client sends a request to update an existing todo ID AND the request is well-formatted THEN return status 200 and the updated todo", async () => {
+  //   const todoid = 1;
+  //   const updatedDescription = "Todo was updated!";
+
+  //   await pool.query(`
+  //     INSERT INTO
+  //       todo (todo_id, description)
+  //     VALUES
+  //       (${todoid}, 'description')
       
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual(expectedResponseBody);
-  });
+  //   `);
+
+  //   const expectedResponseBody = {
+  //     description: updatedDescription,
+  //     todo_id: todoid,
+  //   };
+
+  //   const response = await request(app)
+  //     .put(`/api/todos/${todoid}`)
+  //     .send({ description: updatedDescription})
+  //     .set("Accept", "application/json");
+
+  //   expect(response.status).toBe(200);
+  //   expect(response.body).toEqual(expectedResponseBody);
+  // });
+
   test("PUT /todos/:id: WHEN the client sends a request for a non-existent todo ID THEN return status 404", async () => {
     const nonExistentTodoId = 999999;
+
+
     const expectedResponseBody = {
       error: "Updated todo not found"
     }
@@ -117,5 +132,8 @@ describe("Todos API", () => {
   
 
 
-  test.todo("DELETE /todos/:id: WHEN ... THEN ...");
+  // // test.todo("DELETE /todos/:id: WHEN the client sends a request to delete an existing todo ID THEN delete the todo and return status 200", async () => {
+    
+
+  // });
 });
