@@ -88,31 +88,33 @@ describe("Todos API", () => {
   });
   
 
-  // test("PUT /todos/:id: WHEN the client sends a request to update an existing todo ID AND the request is well-formatted THEN return status 200 and the updated todo", async () => {
-  //   const todoid = 1;
-  //   const updatedDescription = "Todo was updated!";
-
-  //   await pool.query(`
-  //     INSERT INTO
-  //       todo (todo_id, description)
-  //     VALUES
-  //       (${todoid}, 'description')
+  test("PUT /todos/:id: WHEN the client sends a request to update an existing todo ID AND the request is well-formatted THEN return status 200 and the updated todo", async () => {
+    const todoid = 1;
+    const requestBody = {
+      description: "Todo was updated"
+    }
+    await pool.query(`
+      INSERT INTO
+        todo (todo_id, description)
+      VALUES
+        (${todoid}, 'description')
       
-  //   `);
+    `);
 
-  //   const expectedResponseBody = {
-  //     description: updatedDescription,
-  //     todo_id: todoid,
-  //   };
+    const expectedResponseBody = {
+      todo_id: todoid,
+      description: "Todo was updated",
+      
+    };
 
-  //   const response = await request(app)
-  //     .put(`/api/todos/${todoid}`)
-  //     .send({ description: updatedDescription})
-  //     .set("Accept", "application/json");
+    const response = await request(app)
+      .put(`/api/todos/${todoid}`)
+      .send(requestBody)
+      .set("Accept", "application/json");
 
-  //   expect(response.status).toBe(200);
-  //   expect(response.body).toEqual(expectedResponseBody);
-  // });
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual(expectedResponseBody);
+  });
 
   test("PUT /todos/:id: WHEN the client sends a request for a non-existent todo ID THEN return status 404", async () => {
     const nonExistentTodoId = 999999;
@@ -132,8 +134,43 @@ describe("Todos API", () => {
   
 
 
-  // // test.todo("DELETE /todos/:id: WHEN the client sends a request to delete an existing todo ID THEN delete the todo and return status 200", async () => {
+  test("DELETE /todos/:id: WHEN the client sends a request to delete an existing todo ID THEN delete the todo and return status 200", async () => {
+    const todoid = 1;
     
+    await pool.query(`
+      INSERT INTO
+        todo (todo_id, description)
+      VALUES
+      ($1, $2)
+    `, [1, "Todo was deleted"]);
+    const expectedResponseBody = {
+      todo_id: todoid,
+      description: "Todo was deleted",
+      
+    };
 
-  // });
+    const response = await request(app)
+    .delete(`/api/todos/${todoid}`)
+    .set("Accept", "application/json");
+
+  expect(response.status).toBe(200);
+  expect(response.body).toEqual(expectedResponseBody);
+  });
+
+  test("DELETE /todos/:id: WHEN the client sends a request to delete a non-existing todo ID THEN return status 404", async () => {
+    const nonExistentTodoId = 1000000;
+
+
+    const expectedResponseBody = {
+      error: "Todo not found"
+    }
+
+    const response = await request(app)
+      .delete(`/api/todos/${nonExistentTodoId}`)
+      .set("Accept", "application/json");
+
+      expect(response.status).toBe(404);
+      expect(response.body).toEqual(expectedResponseBody);
+  });
+  
 });

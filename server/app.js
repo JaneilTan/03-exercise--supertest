@@ -68,18 +68,14 @@ app.put("/api/todos/:id", async (req, res) => {
     const { id } = req.params;
     const { description } = req.body;
     const updateTodo = await pool.query(
-      "UPDATE todo SET description = $1 WHERE todo_id = $2",
+      "UPDATE todo SET description = $1 WHERE todo_id = $2 RETURNING todo_id, description",
       [description, id]
     );
-    if (updateTodo.rowCount === 0) {
+    if (updateTodo.rows[0] === undefined) {
       return res.status(404).json({ error: "Updated todo not found"});
     }
-    const updatedTodo = updateTodo.rows[0];
 
-    res.status(200).json({
-      description: updatedTodo.description,
-      todo_id: updatedTodo.todo_id,
-    });
+    res.status(200).json(updateTodo.rows[0]);
   } catch (err) {
     console.error(err.message);
   }
@@ -90,10 +86,13 @@ app.put("/api/todos/:id", async (req, res) => {
 app.delete("/api/todos/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const deleteTodo = await pool.query("DELETE FROM todo WHERE todo_id = $1", [
+    const deleteTodo = await pool.query("DELETE FROM todo WHERE todo_id = $1 RETURNING todo_id, description", [
       id,
     ]);
-    res.json("Todo was deleted!");
+    if (deleteTodo.rows[0] === undefined) {
+      return res.status(404).json({ error: "Todo not found"});
+    }
+    res.status(200).json(deleteTodo.rows[0]);
   } catch (err) {
     console.error(err.message);
   }
